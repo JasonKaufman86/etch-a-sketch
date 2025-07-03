@@ -3,6 +3,9 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .canvas {
@@ -14,3 +17,11 @@ body {
     height: 100%;;
 }
 
+.controls {
+    background-color: aliceblue;
+    width: 512px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}

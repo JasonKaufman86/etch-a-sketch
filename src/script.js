@@ -9,7 +9,7 @@ let selectedClick = true;
 let selectedFade = false;
 let selectedRandom = false;
 let selectedErase = false;
-let selectedBorder = true;
+let selectedBorder = false;
 let selectedSize = 8;
 
 // -----------------------------------------------------------------------
@@ -43,12 +43,18 @@ function setPixelBorder(pixel, color){
     pixel.style.border = `1px solid ${color}`;
 }
 
+function delPixelBorder(pixel) {
+    pixel.style.border = '';
+}
+
 function createPixel(id, color, size){
     let p = document.createElement('div');
     p.classList.add('pixel');
     p.style.boxSizing = 'border-box';
+
     setPixelColor(p, color);
     setPixelSize(p, size);
+    if(selectedBorder) setPixelBorder(p, selectedBGColor);
 
     const handleRender = (e) => {
 
@@ -106,6 +112,16 @@ function setCanvasOpacity(value){
     pixels.forEach(p => setPixelOpacity(p, value));
 }
 
+function setCanvasBorder(color){
+    pixels = document.querySelectorAll('.pixel');
+    pixels.forEach(p => setPixelBorder(p, color));
+}
+
+function delCanvasBorder(){
+    pixels = document.querySelectorAll('.pixel');
+    pixels.forEach(p => delPixelBorder(p));
+}
+
 function setCanvasContent(size, color){
     for(let row = 1; row <= size; row++){
         for(let col = 1; col <= size; col++){
@@ -133,6 +149,7 @@ BG_COLOR_PICKER.addEventListener('change', e => {
     selectedBGColor = e.target.value;
     setCanvasBackground(selectedBGColor);
     setCanvasColor(selectedBGColor);
+    setCanvasBorder(selectedBGColor);
 })
 
 const CLEAR_BUTTON = document.querySelector('#clearButton');
@@ -151,7 +168,11 @@ const FADE_BUTTON = document.querySelector('#fadeButton');
 FADE_BUTTON.addEventListener('click', () => {selectedFade = !selectedFade});
 
 const BORDER_BUTTON = document.querySelector('#borderButton');
-RANDOM_BUTTON.addEventListener('click', () => {selectedBorder = !selectedBorder});
+BORDER_BUTTON.addEventListener('click', () => {
+    selectedBorder = !selectedBorder;
+    if (!selectedBorder) return delCanvasBorder();
+    setCanvasBorder(selectedBGColor);
+});
 
 const ERASE_BUTTON = document.querySelector('#eraseButton');
 ERASE_BUTTON.addEventListener('click', () => {selectedErase = !selectedErase});
@@ -160,8 +181,6 @@ const SIZE_SELECT = document.querySelector('#sizeSelect');
 SIZE_SELECT.appendChild(new Option('8x8', '8'));
 SIZE_SELECT.appendChild(new Option('16x16', '16'));
 SIZE_SELECT.appendChild(new Option('32x32', '32'));
-SIZE_SELECT.appendChild(new Option('64x64', '64'));
-SIZE_SELECT.appendChild(new Option('128x128', '128'));
 SIZE_SELECT.addEventListener('change', e => {
     canvas.innerHTML = '';
     setCanvasContent(+e.target.value, selectedBGColor);
